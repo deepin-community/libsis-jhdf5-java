@@ -1,0 +1,68 @@
+Description: avoid using the header H5private.h of hdf5, which is not shipped
+ We do not mix the sources of hdf5 and sis-jhdf5, which upstream apparently
+ does.
+Author: Pierre Gruet <pgt@debian.org>
+Last-Update: 2020-04-26
+Forwarded: not-needed
+
+--- a/source/c/jni/h5jni.h
++++ b/source/c/jni/h5jni.h
+@@ -20,7 +20,57 @@
+ #include <jni.h>
+ #include "H5version.h"
+ #include <string.h>
+-#include "H5private.h"
++
++#ifndef HDmemset
++    #define HDmemset(X,C,Z)    memset(X,C,Z)
++#endif /* HDmemset */
++#ifndef HDmemcpy
++    #define HDmemcpy(X,Y,Z)    memcpy((char*)(X),(const char*)(Y),Z)
++#endif /* HDmemcpy */
++#ifndef HDmalloc
++    #define HDmalloc(Z)    malloc(Z)
++#endif /* HDmalloc */
++#ifndef HDcalloc
++    #define HDcalloc(N,Z)    calloc(N,Z)
++#endif /* HDcalloc */
++#ifndef HDstrcpy
++    #define HDstrcpy(X,Y)    strcpy(X,Y)
++#endif /* HDstrcpy */
++#ifndef HDstrncpy
++    #define HDstrncpy(X,Y,Z)  strncpy(X,Y,Z)
++#endif /* HDstrncpy */
++#ifndef HDfree
++    #define HDfree(M)    free(M)
++#endif /* HDfree */
++#ifndef HDstrlen
++    #define HDstrlen(S)    strlen(S)
++#endif /* HDstrlen */
++#ifndef HDstrcat
++    #define HDstrcat(X,Y)    strcat(X,Y)
++#endif /* HDstrcat */
++#ifndef HDstrtok
++    #define HDstrtok(X,Y)    strtok(X,Y)
++#endif /* HDstrtok */
++#ifndef HDfopen
++    #define HDfopen(S,M)    fopen(S,M)
++#endif /* HDfopen */
++#ifndef HDfclose
++    #define HDfclose(F)    fclose(F)
++#endif /* HDfclose */
++#ifndef HDfprintf
++    #define HDfprintf    fprintf
++#endif /* HDfprintf */
++
++/*
++ * HDF Boolean type.
++ */
++#ifndef FALSE
++  #define FALSE false
++#endif
++#ifndef TRUE
++  #define TRUE true
++#endif
++
+ 
+ #ifndef _Included_h5jni
+ #define _Included_h5jni

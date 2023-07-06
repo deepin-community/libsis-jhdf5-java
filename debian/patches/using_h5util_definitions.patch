@@ -1,0 +1,30 @@
+Description: using definitions of source/c/jni/h5util.h
+ One prototype is missing in this file, as the function is defined in 
+ source/c/jni/h5util.c
+ .
+ And this file should be included by source/c/h5lHelperImp.c, as the latter 
+ uses functions of which prototypes are in this file.
+Author: Pierre Gruet <pgt@debian.org>
+Last-Update: 2020-04-26
+Forwarded: brinn@ethz.ch
+
+--- a/source/c/h5lHelperImp.c
++++ b/source/c/h5lHelperImp.c
+@@ -17,6 +17,7 @@
+ #include "hdf5.h"
+ #include "H5Ppublic.h"
+ #include "h5jni.h"
++#include "jni/h5util.h"
+ 
+ #include <jni.h>
+ #include <stdlib.h>
+--- a/source/c/jni/h5util.h
++++ b/source/c/jni/h5util.h
+@@ -41,6 +41,7 @@
+ extern char*   h5str_append (h5str_t *str, const char* cstr);
+ extern size_t  h5str_vlsprintf(h5str_t *str, hid_t container, hid_t tid, hvl_t *buf, int expand_data);
+ extern size_t  h5str_sprintf(h5str_t *str, hid_t container, hid_t tid, void *buf, int ptrlen, int expand_data);
++extern size_t  h5str_vlconvert(char *str, hid_t container, hid_t tid, hvl_t *ptr, int expand_data);
+ extern size_t  h5str_vlsconvert(char *str, hid_t container, hid_t tid, hvl_t *buf, int expand_data);
+ extern size_t  h5str_convert(char **str, hid_t container, hid_t tid, hvl_t *buf, int ptroffset, int expand_data);
+ extern void    h5str_array_free(char **strs, size_t len);

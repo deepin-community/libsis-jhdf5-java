@@ -1,0 +1,47 @@
+Description: adding loading of jni part in Java code
+ In two files, the library has to be loaded by calling System.loadLibrary.
+ In two other ones, the library call has to be changed.
+Author: Pierre Gruet <pgt@debian.org>
+Last-Update: 2020-05-07
+Forwarded: not-needed
+
+--- a/source/java/ch/systemsx/cisd/hdf5/io/HDF5DataSetRandomAccessFile.java
++++ b/source/java/ch/systemsx/cisd/hdf5/io/HDF5DataSetRandomAccessFile.java
+@@ -95,6 +95,7 @@
+     {
+         this(createHDF5ReaderOrWriter(hdf5File, readOnly), dataSetPath, creationStorageFeature,
+                 size, opaqueTagOrNull, true);
++        System.loadLibrary("sis-jhdf5");
+     }
+ 
+     private static IHDF5Reader createHDF5ReaderOrWriter(File hdf5File, boolean readOnly)
+@@ -127,6 +128,7 @@
+             HDF5GenericStorageFeatures creationStorageFeature, int size, String opaqueTagOrNull,
+             boolean closeReaderOnCloseFile) throws IOExceptionUnchecked
+     {
++        System.loadLibrary("sis-jhdf5");
+         this.closeReaderOnCloseFile = closeReaderOnCloseFile;
+         final boolean readOnly = (reader instanceof IHDF5Writer) == false;
+         try
+--- a/source/java/ch/systemsx/cisd/hdf5/BuildAndEnvironmentInfo.java
++++ b/source/java/ch/systemsx/cisd/hdf5/BuildAndEnvironmentInfo.java
+@@ -26,7 +26,7 @@
+  */
+ public class BuildAndEnvironmentInfo extends AbstractBuildAndEnvironmentInfo
+ {
+-    private final static String BASE = "jhdf5";
++    private final static String BASE = "sis-jhdf5";
+     
+     public final static BuildAndEnvironmentInfo INSTANCE = new BuildAndEnvironmentInfo();
+     
+--- a/source/java/hdf/hdf5lib/H5.java
++++ b/source/java/hdf/hdf5lib/H5.java
+@@ -235,7 +235,7 @@
+         {
+             return;
+         }
+-        if (NativeLibraryUtilities.loadNativeLibrary("jhdf5") == false)
++        if (NativeLibraryUtilities.loadNativeLibrary("sis-jhdf5") == false)
+         {
+             throw new UnsupportedOperationException("No suitable HDF5 native library found for this platform.");
+         }

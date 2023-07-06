@@ -1,0 +1,2 @@
+usr/share/java/sis-jhdf5.jar:
+         Class-Path: commons-lang3.jar commons-io.jar sis-base.jar args4j.jar

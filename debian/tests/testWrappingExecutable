@@ -1,0 +1,49 @@
+#!/bin/sh
+# autopkgtest check: Create an archive with both the wrapper and the jar, 
+# then compare their contents. Extract one of them and check that the outfiles
+# are the same as the original ones.
+# (C) 2020 Pierre Gruet.
+# Author: Pierre Gruet <pgt@debian.org>
+
+set -e
+
+WORKDIR=$(mktemp -d)
+trap "rm -rf $WORKDIR" 0 INT QUIT ABRT PIPE TERM
+cd $WORKDIR
+
+cat <<EOF > firstFile
+Contents of file 1
+\[e^{i\pi}+1=0\]
+EOF
+
+cat <<EOF > secondFile.tex
+Contents of file 2
+\[\sum_{n=1}^{+\infty}\frac{1}{n^2}=\frac{\pi^2}{6}\]
+EOF
+
+#Creating an archive
+h5ar ar arch1 firstFile secondFile.tex
+
+#The result must be the same if we directly call the wrapped jar.
+java -jar /usr/share/java/sis-jhdf5-h5ar-cli.jar ar arch2 firstFile secondFile.tex
+#To check it, we get a listing of the files in the two archives and see that they are equal.
+java -jar /usr/share/java/sis-jhdf5-h5ar-cli.jar ls -v -R -t -S arch1.h5ar | tail -n 2 > outLs1
+h5ar ls -v -R -t -S arch2.h5ar | tail -n 2 > outLs2
+diff outLs1 outLs2
+
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
+#Finally, we make a copy of the original files and delete them.
+#Then we extract the archive and compare the outfiles to the copies we made.
+cp firstFile firstFileCp
+cp secondFile.tex secondFileCp.tex
+rm firstFile secondFile.tex
+h5ar ex arch1.h5ar
+diff firstFile firstFileCp && diff secondFile.tex secondFileCp.tex
+
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+

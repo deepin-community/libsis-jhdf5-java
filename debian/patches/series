@@ -1,0 +1,8 @@
+use_debian_packaged_libs.patch
+use_jaxb.patch
+avoid_using_private_hdf5_header.patch
+using_h5util_definitions.patch
+loading_jni_in_java_file.patch
+declaring_final_variables.patch
+adapting_h5ar_script_to_debian.patch
+closing_writer_in_tests.patch

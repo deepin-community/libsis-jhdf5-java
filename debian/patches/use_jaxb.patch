@@ -1,0 +1,24 @@
+Author: Emmanuel Bourg <ebourg@apache.org>
+Date: Wed, 19 Sep 2018 23:29:20 +0200
+Origin: https://lists.debian.org/debian-java/2018/09/msg00061.html
+Forwarded: not-needed
+Description: It isn't missing, it's hidden by default to prepare its removal in the
+ next Java release.
+.
+ > I guess this is what I need once Java 11 will be the default - but I
+ > have no idea why the build stumbles upon this. :-(
+ .
+ Java 11 will soon be the default (maybe next week for the GA release?),
+ so I recommend aiming for a long term solution.
+
+--- a/source/java/ch/systemsx/cisd/hdf5/hdf5lib/HDFHelper.java
++++ b/source/java/ch/systemsx/cisd/hdf5/hdf5lib/HDFHelper.java
+@@ -32,7 +32,7 @@ import static hdf.hdf5lib.HDF5Constants.
+ import static hdf.hdf5lib.HDF5Constants.H5_INDEX_NAME;
+ import static hdf.hdf5lib.HDF5Constants.H5_ITER_INC;
+ 
+-import com.sun.xml.internal.bind.v2.runtime.Name;
++import com.sun.xml.bind.v2.runtime.Name;
+ 
+ import hdf.hdf5lib.H5;
+ import hdf.hdf5lib.HDF5Constants;

@@ -1,0 +1,15 @@
+Description: properly closing files in a test
+Author: Pierre Gruet <pgt@debian.org>
+Forwarded: brinn@ethz.ch
+Last-Update: 2022-07-30
+
+--- a/sourceTest/java/ch/systemsx/cisd/hdf5/io/HDF5DataSetRandomAccessFileTest.java
++++ b/sourceTest/java/ch/systemsx/cisd/hdf5/io/HDF5DataSetRandomAccessFileTest.java
+@@ -957,6 +957,7 @@
+         {
+             assertEquals("Position " + i, 0, arrayRead[0]);
+         }
++        writer.close();
+         raFile.close();
+     }
+ 

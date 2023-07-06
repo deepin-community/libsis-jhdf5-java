@@ -1,0 +1,16 @@
+Description: Adding final qualifier for a variable used by an inner class
+Author: Pierre Gruet <pgt@debian.org>
+Last-Update: 2022-07-30
+Forwarded: brinn@ethz.ch
+
+--- a/source/java/ch/systemsx/cisd/hdf5/HDF5BaseWriter.java
++++ b/source/java/ch/systemsx/cisd/hdf5/HDF5BaseWriter.java
+@@ -1106,7 +1106,7 @@
+      */
+     HDF5DataSetTemplate createDataSetTemplate(final long storageDataTypeId,
+             final HDF5AbstractStorageFeatures features, final long[] dimensions,
+-            final long[] chunkSizeOrNull, int elementLength)
++            final long[] chunkSizeOrNull, final int elementLength)
+     {
+         final boolean empty = isEmpty(dimensions);
+         final boolean chunkSizeProvided =

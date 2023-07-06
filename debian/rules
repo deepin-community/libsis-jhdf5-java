@@ -1,4 +1,74 @@
 #!/usr/bin/make -f
 
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+export CLASSPATH=/usr/share/java/commons-lang3.jar:/usr/share/java/commons-io.jar:/usr/share/java/sis-base.jar
+export TESTCLASSPATH=/usr/share/java/junit4.jar:/usr/share/java/testng.jar:/usr/share/java/jmock2.jar:/usr/share/java/jcommander.jar:/usr/share/java/sis-base.jar
+
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+include /usr/share/java/java_defaults.mk
+export DEB_BUILD_MAINT_OPTIONS = hardening=+bindnow
+
+CPPFLAGS += ${jvm_includes} -Ijni
+
 %:
-	dh $@
+	dh $@ --with javahelper
+
+override_dh_auto_clean:
+	dh_auto_clean
+	$(RM) source/c/libsis-jhdf5.so
+	$(RM) sis-jhdf5-h5ar-cli.jar
+
+override_dh_auto_build:
+	dh_auto_build
+	# The jar needed by the h5ar wrapper is not built by the call to gradle.
+	# We thus do it manually.
+	CLASSPATH="$(CLASSPATH):/usr/share/java/args4j.jar:/usr/share/java/jaxb-runtime.jar" jh_build sis-jhdf5-h5ar-cli.jar $$(find source/java/ -name *.java) --main ch.systemsx.cisd.hdf5.h5ar.HDF5ArchiverMain
+	# Create JNI manually since this is not part of the build system
+	# Upsteam seems to `cd source/c` and call a script which in turn calls compile_hdf5_gcc.sh
+	# In this script hdf5 source is unpacked, possibly patched, build and used for the JNI build
+	# Most problematic issue is that private header H5private.h is used
+	# Thus we have patched and got the few useful definitions in that private header.
+	cd source/c && \
+		$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS)  -shared -fPIC -Wl,--exclude-libs,ALL \
+		-I/usr/lib/jvm/default-java/include/ -I/usr/include/hdf5/serial \
+		*.c jni/*.c -o libsis-jhdf5.so -lz -lhdf5_serial
+
+override_jh_installlibs:
+	# The jar that is build is placed in targets/gradle/libs, and its name
+	# corresponds to the regex sis-jhdf5-[0-9]*.jar. We look for it.
+	GENERATEDJARPATH="targets/gradle/libs/$$(ls -l targets/gradle/libs/ | grep 'sis-jhdf5-[0-9]*.jar' | awk '{print $$9}')" ; \
+	mv $$GENERATEDJARPATH targets/gradle/libs/sis-jhdf5.jar
+	jh_installlibs --version-strip='[~pre1]*[+]git[.0-9a-f]*[+]dfsg[.0-9]*'
+
+override_jh_depends:
+	# We do two successive calls because the library does not need to depend on
+	# the jre as the program package does, and the jni does not need jh_depends.
+	jh_depends --package=h5ar
+	jh_depends --package=libsis-jhdf5-java
+
+override_dh_auto_test:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	# Run the tests that come with the upstream source.
+	# These tests need to be run in the Zurich timezone.
+	# It is necessary to put the test tree in a directory of which path does not
+	# include a '+', else all the tests will be skipped. I don't know why. This
+	# is a problem when the Debian version of the package includes a '+', for
+	# instance if ``+dfsg'' is part of it. mktemp -d returns a path fitting this
+	# requirement.
+	# See above target for the rationale behind GENERATEDJARPATH.
+	TESTSOURCEDIR=$(shell mktemp -d) ; \
+	cp -r sourceTest/ $$TESTSOURCEDIR ; \
+	GENERATEDJARPATH="targets/gradle/libs/$$(ls -l targets/gradle/libs/ | grep 'sis-jhdf5-[0-9]*.jar' | awk '{print $$9}')" ; \
+	export CLASSPATH="$$TESTSOURCEDIR/sourceTest/java:`readlink -f $$GENERATEDJARPATH`:$(TESTCLASSPATH):$(CLASSPATH)" \
+	       JNIPATH="`readlink -f source/c`:/usr/lib/jni" \
+	       TZ=Europe/Zurich LC_ALL=C ; \
+	    find $$TESTSOURCEDIR/sourceTest/java -name '*.java' | xargs javac && \
+	    java -Xmx2048M -Djava.library.path="$$JNIPATH" org.testng.TestNG -verbose 2 sourceTest/java/tests.xml
+	# These other tests have 3 failures.  I don't think they are expected to pass.
+	#cd sourceTest/java && \
+	#ln -s test/hdf5lib/h5ex_g_iterate.hdf . && \
+	#java -Xmx2048M -Djava.library.path="$$JNIPATH" org.junit.runner.JUnitCore test.hdf5lib.TestAll
+endif

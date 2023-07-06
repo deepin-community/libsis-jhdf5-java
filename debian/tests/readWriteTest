@@ -1,0 +1,18 @@
+#!/bin/sh
+# autopkgtest check: build and run ReadWriteTest.java, which calls some
+# classes of sis-jhdf5.jar.
+# (C) 2015 Tim Booth
+#     2015 Olivier Sallou
+#     2020 Pierre Gruet
+# Author: Pierre Gruet <pgt@debian.org>
+
+set -e
+
+WORKDIR=$(mktemp -d)
+trap "rm -rf $WORKDIR" 0 INT QUIT ABRT PIPE TERM
+cp debian/tests/ReadWriteTest.java $WORKDIR
+cd $WORKDIR
+
+javac -cp /usr/share/java/sis-jhdf5.jar ReadWriteTest.java
+java -Xmx2048M -cp /usr/share/java/sis-jhdf5.jar:. ReadWriteTest
+

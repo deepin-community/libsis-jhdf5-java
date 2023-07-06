@@ -1,0 +1,133 @@
+.TH HDF5 "1" "May 2020" "HDF5 archiver version 19.04.0" "User Commands"
+.SH NAME
+h5ar \- HDF5 archiver
+.SH SYNOPSIS
+.B h5ar
+[ARCHIVE [option [...]] <archive_file> <item\-to\-archive> [...]
+| CAT [option [...]] <archive_file> <item\-to\-cat> [...]
+| EXTRACT [option [...]] <archive_file> [<item\-to\-unarchive> [...]]
+| DELETE [option [...]] <archive_file> <item\-to\-delete> [...]
+| LIST [option [...]] <archive_file> [<item\-to\-list> [...]]
+| VERIFY [option [...]] <archive_file> [<item\-to\-verify> [...]]]
+.SH DESCRIPTION
+h5ar is a HDF5 archiver, which can create an HDF5 archive, extract it and manipulate it in various ways. It does to by calling an executable jar file.
+
+.SH OPTIONS
+.TP
+\fB\-B\fR, \fB\-\-build\fR
+prints out the build and environment information
+.TP
+\fB\-C\fR, \fB\-\-compress\-all\fR
+compresses all files
+.TP
+\fB\-D\fR, \fB\-\-suppress\-directories\fR
+suppresses output for directories itself for LIST
+and VERIFY (default: false)
+.TP
+\fB\-E\fR, \fB\-\-exclude\-dirs\fR REGEX
+excludes directories according to provided regex
+.TP
+\fB\-F\fR, \fB\-\-file\-format\fR N
+specifies the file format version when creating
+an archive (N=1 \-> HDF51.8 (default), N=2 \->
+HDF51.10), N=99 \-> LATEST (default: 1)
+.TP
+\fB\-H\fR, \fB\-\-help\fR
+shows this help text
+.TP
+\fB\-I\fR, \fB\-\-include\-dirs\fR REGEX
+includes directories according to provided regex
+.TP
+\fB\-N\fR, \fB\-\-no\-sync\fR
+does not sync to disk before program exits (write
+mode only) (default: false)
+.TP
+\fB\-R\fR, \fB\-\-recursive\fR
+recursive LIST and VERIFY (default: false)
+.TP
+\fB\-S\fR, \fB\-\-stop\-on\-error\fR
+stops on first error and gives detailed error
+report (default: false)
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+prints out the version information
+.TP
+\fB\-a\fR, \fB\-\-verify\-attributes\fR
+considers file attributes for VERIFY (default:
+false)
+.TP
+\fB\-c\fR, \fB\-\-compress\fR REGEX
+compresses files according to provided regex
+.TP
+\fB\-e\fR, \fB\-\-exclude\fR REGEX
+excludes files according to provided regex
+.TP
+\fB\-i\fR, \fB\-\-include\fR REGEX
+includes files according to provided regex
+.TP
+\fB\-m\fR, \fB\-\-check\-missing\-files\fR
+checks for files present on the filesystem but
+missing from the archive for VERIFY (default:
+false)
+.TP
+\fB\-n\fR, \fB\-\-numeric\fR
+uses numeric values for mode, uid and gid for
+LIST and VERIFY (default: false)
+.HP
+\fB\-nc\fR, \fB\-\-no\-compression\fR REGEX
+does not compress files satisfying provided regex
+.TP
+\fB\-q\fR, \fB\-\-quiet\fR
+quiet operation (only error output) (default:
+false)
+.TP
+\fB\-r\fR, \fB\-\-root\-dir\fR DIR
+root directory for archiving / extracting /
+verifying
+.TP
+\fB\-t\fR, \fB\-\-test\-checksums\fR
+tests CRC32 checksums of files in archive for
+LIST (default: false)
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+verbose output (all operations) (default: false)
+.SS "Modes (command capitalization ignored):"
+.IP
+ARCHIVE (AR, A): add files on the file system to an archive (always recursive)
+.br
+CAT (C): extract files from an archive to stdout
+.br
+EXTRACT (EX, E): extract files from an archive to the file system (always recursive)
+.br
+DELETE (REMOVE, RM, D): delete files from an archive
+.br
+LIST (LS, S): list files in an archive
+.br
+VERIFY (VF, V): verify the existence and integrity of files on the file system vs. the contents of an archive
+.SH EXAMPLES
+.IP
+h5ar ar /tmp/home \-r ~/ .
+.IP
+\- will create home.h5ar in /tmp containing all files of the user's home directory (note: ARCHIVE is always recursive).
+.IP
+h5ar ls \-v \-R \-t \-S /tmp/home
+.IP
+\- will list the full content of archive /tmp/home.h5ar recursively, with full detail and verify the checksums; stop if there is a checksum mismatch.
+.IP
+h5ar vf \-r ~/ \-v \-R \-m /tmp/home foo bar
+.IP
+\- will verify the contents of directories foo/ and bar/ in archive /tmp/home.h5ar recursively against the user's home directory, detecting any missing files.
+.SH "SEE ALSO"
+The full documentation for
+.B HDF5
+is maintained as a Texinfo manual.  If the
+.B info
+and
+.B HDF5
+programs are properly installed at your site, the command
+.IP
+.B info HDF5
+.PP
+should give you access to the complete manual.
+.SH AUTHOR
+This manual page was created by Pierre Gruet <pgt@debian.org> for the Debian GNU/Linux distribution, because the original package does not have one.

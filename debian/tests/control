@@ -1,0 +1,9 @@
+Tests: providedTests
+Depends: libsis-jhdf5-java, libsis-jhdf5-jni, default-jdk, junit4, testng, libjmock2-java, libjcommander-java
+
+Tests: testWrappingExecutable
+Depends: h5ar, libsis-jhdf5-jni, jarwrapper
+
+Tests: readWriteTest
+Depends: libsis-jhdf5-java, libsis-jhdf5-jni, default-jdk
+Restrictions: superficial

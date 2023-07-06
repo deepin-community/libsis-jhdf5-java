@@ -1,5 +1,142 @@
-template-repository (1.0-1) unstable; urgency=medium
+libsis-jhdf5-java (19.04.1+dfsg-3) unstable; urgency=medium
 
-  * Initial release
+  * Team upload.
+  * Depend on libeclipse-jdt-core-java instead of libecj-java
 
- -- Tsic404 <liuheng@deepin.org>  Sat, 28 Jan 2023 13:46:49 +0800
+ -- Emmanuel Bourg <ebourg@apache.org>  Thu, 23 Feb 2023 13:25:11 +0100
+
+libsis-jhdf5-java (19.04.1+dfsg-2) unstable; urgency=medium
+
+  * Adding a missing directive from removed H5private.h file of hdf5
+    (Closes: #1019393, #1020139)
+
+ -- Pierre Gruet <pgt@debian.org>  Mon, 19 Sep 2022 23:13:29 +0200
+
+libsis-jhdf5-java (19.04.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream version
+  * Refreshing patches
+
+ -- Pierre Gruet <pgt@debian.org>  Sat, 30 Jul 2022 14:05:39 +0200
+
+libsis-jhdf5-java (19.04.0+dfsg-5) unstable; urgency=medium
+
+  * Raising Standards version to 4.6.0 (no change)
+  * Fixing unnecessary greater-than versions in build-dependencies
+  * Providing Bug- and Repository- fields in d/u/metadata
+
+ -- Pierre Gruet <pgt@debian.org>  Fri, 04 Mar 2022 17:51:47 +0100
+
+libsis-jhdf5-java (19.04.0+dfsg-4) unstable; urgency=medium
+
+  * debhelper-compat 13 (routine-update)
+  * Remove trailing whitespace in debian/copyright (routine-update)
+  * Add salsa-ci file (routine-update)
+  * Set upstream metadata fields: Repository.
+
+ -- Andreas Tille <tille@debian.org>  Sat, 07 Nov 2020 17:38:49 +0100
+
+libsis-jhdf5-java (19.04.0+dfsg-3) unstable; urgency=medium
+
+  [ Pierre Gruet ]
+  * Activating build-time tests again
+  * Deleting useless rm in override_dh_auto_clean
+  * Solving issues in tests due to misclosed files
+  * Forwarding patches
+
+  [ Andreas Tille ]
+  * Declare different HDF licenses for source/c/jni and
+    source/java/hdf/hdf5lib
+    Closes: #973507
+
+ -- Andreas Tille <tille@debian.org>  Sun, 01 Nov 2020 15:13:17 +0100
+
+libsis-jhdf5-java (19.04.0+dfsg-2) unstable; urgency=medium
+
+  [ Pierre Gruet ]
+  * Changing the name of the .so file in libsis-jhdf5-jni (Closes: #959955)
+  * Providing the executable h5ar and a manpage
+  * Adding a test for h5ar to the testsuite
+  * Adding final qualifier to some arguments of functions
+  * Providing hardening while compiling the jni part
+  * Providing tests of the testsuite as examples
+
+  [ Steffen Moeller ]
+  * d/control: Added R-R-R:no
+
+  [ Andreas Tille ]
+  * Mention source/c/jni/* in d/copyright
+  * Make sure build-time test will pass for the moment
+
+ -- Pierre Gruet <pgtdebian@free.fr>  Tue, 12 May 2020 22:37:32 +0200
+
+libsis-jhdf5-java (19.04.0+dfsg-1) unstable; urgency=medium
+
+  [ Andreas Tille ]
+  * New upstream version
+  * Adapt watch file to upstream Gitlab clone tags
+  * Drop now unneeded get-orig-source target
+  * Fix homepage
+  * Use gradle build system
+  * Build-Depends: ant
+  * Versioned Build-Depends: libsis-base-java (>= 18.08.0~)
+  * Standards-Version: 4.5.0 (routine-update)
+  * debhelper-compat 12 (routine-update)
+
+  [ Pierre Gruet ]
+  * Refresh patch use_debian_packaged_libs.patch
+  * Providing a patch to get around using private header from hdf5
+  * Fixing omissions linked to prototypes in source/c/jni/h5util.h
+  * Installing the .so file in the -jni package
+  * Writing tests in debian/tests
+  * Updating dependencies with nocheck
+  * Adding a missing library loading in a java file, using a patch
+    from Gilles Filippini
+  * Rewriting the override of dh_auto_test so that upstream tests run
+    and pass
+  * Overriding dh_auto_clean
+  * Adapting debian/rules to the name of the built jar
+
+ -- Pierre Gruet <pgtdebian@free.fr>  Wed, 06 May 2020 17:36:16 +0200
+
+libsis-jhdf5-java (14.12.6-2) unstable; urgency=medium
+
+  * Add upstream contact
+  * Enable d/watch to work with versioned dirs
+  * debhelper 11
+  * Point Vcs fields to salsa.debian.org
+  * Standards-Version: 4.1.4
+  * To enable this package at least building to update the dependencies
+    of the binary package and make it installable at least, all tests
+    that are exposing bug #842815 are deactivated.  RC bug #842815 is
+    active anyway so this package will not migrate to testing (and never
+    should in this form - workaround will be deactivated in Git once the
+    package is uploaded to make sure it will not happen by accident)
+  * DEP5 fix
+
+ -- Andreas Tille <tille@debian.org>  Sun, 27 May 2018 07:47:25 +0200
+
+libsis-jhdf5-java (14.12.6-1) unstable; urgency=medium
+
+  * New upstream version
+    Closes: #842815
+  * Fix homepage / download URL
+  * cme fix dpkg-control
+
+ -- Andreas Tille <tille@debian.org>  Mon, 14 Nov 2016 14:31:00 +0100
+
+libsis-jhdf5-java (14.12.1-2) unstable; urgency=medium
+
+  * Use /usr/share/java/java_defaults.mk to adapt to correct include options
+    for new default-jdk (openjdk-8-jdk)
+    Closes: #814875
+  * cme fix dpkg-control
+
+ -- Andreas Tille <tille@debian.org>  Tue, 16 Feb 2016 13:31:21 +0100
+
+libsis-jhdf5-java (14.12.1-1) unstable; urgency=medium
+
+  * [ Team upload ]
+    First package (Closes: #796390 ).
+
+ -- Tim Booth <tbooth@ceh.ac.uk>  Wed, 12 Aug 2015 12:15:17 +0100

@@ -1,0 +1,35 @@
+We have 2 Free Java libraries for HDF5:
+
+1) The "NCSA" lib distributed by hdfgroup.org with classes in namespace
+ncsa.hdf.hdf5lib, packaged on Debian as libjhdf5-java.
+
+2) The "CISD" aka. "SIS" lib distributed by ethz.ch with classes in the
+namespace ch.systemsx, not currently packaged on Debian.
+
+The SIS library forks some Java code from the ncsa.hdf namespace, and
+also needs to link against the NCSA native library (via JNI) at runtime.
+
+So, trying to package sis-jhdf5:
+
+Can we exclude the ncsa.hdf.hdf5lib.* classes from sis-jhdf5 and
+compile it against the existing classes in /usr/share/java/jhdf5.jar?
+My conclusion is not, because...
+
+The version of ncsa/hdf/hdf5lib/exceptions/HDF5Exception.java supplied
+with the sis-jhdf5 code subclasses RuntimeException but the version in
+libhdf5-java does not.  The result is that the code here does not need
+to declare the exceptions being thrown, and thus simply ignores them
+all.  One can go through and add all "throws" declarations (there are a
+_lot_ of them!!), but then any client code using the library will also
+break unless it is likewise patched or the code is modified to handle
+the exceptions internally. I think we'd best just admit defeat here and
+use the code supplied with sis-jhdf5.
+
+So, I'm going to try rolling two new packages, and see if that allows me
+to compile the latest FastQC:
+
+libsis-base-java (should be simple)
+libsis-jhdf5-java (depends on libsis-base-java + libhdf5, but ignores
+                   existing libjhdf5-jni package)
+
+-- Tim Booth on 12th Aug 2015
