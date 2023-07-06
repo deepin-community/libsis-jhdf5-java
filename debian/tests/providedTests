@@ -1,0 +1,26 @@
+#!/bin/sh
+# autopkgtest check: build and run the tests that are provided by upstream.
+# Run the tests that come with the upstream source.
+# These tests need to be run in the Zurich timezone.
+# The whole folder sourceTest/ is copied into a temporary directory where the
+# tests will be run, as some of them will write into the directory (and fail
+# if they are executed from the original source tree).
+# (C) 2020 Pierre Gruet.
+# Author: Pierre Gruet <pgt@debian.org>
+
+set -e
+
+SOURCEDIR=$(pwd)
+WORKDIR=$(mktemp -d)
+trap "rm -rf $WORKDIR" 0 INT QUIT ABRT PIPE TERM
+cp -r sourceTest/ $WORKDIR
+cd $WORKDIR
+
+TESTCLASSPATH=/usr/share/java/junit4.jar:/usr/share/java/testng.jar:/usr/share/java/jmock2.jar:/usr/share/java/jcommander.jar
+export CLASSPATH="sourceTest/java:/usr/share/java/sis-jhdf5.jar:$TESTCLASSPATH" \
+ TZ=Europe/Zurich LC_ALL=C
+# Compiling and running. I redirect stderr to stdout for compilation, as a
+# deprecation warning is launched.
+find sourceTest/java -name '*.java' | xargs javac 2>&1
+java -Xmx2048M -Djava.library.path=/usr/lib/jni org.testng.TestNG -verbose 2 $SOURCEDIR/sourceTest/java/tests.xml
+

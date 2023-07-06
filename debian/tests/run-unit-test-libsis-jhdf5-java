@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+
+pkg=libsis-jhdf5-java
+
+export LC_ALL=C.UTF-8
+if [ "${AUTOPKGTEST_TMP}" = "" ] ; then
+  AUTOPKGTEST_TMP=$(mktemp -d /tmp/${pkg}-test.XXXXXX)
+  # Double quote below to expand the temporary directory variable now versus
+  # later is on purpose.
+  # shellcheck disable=SC2064
+  trap "rm -rf ${AUTOPKGTEST_TMP}" 0 INT QUIT ABRT PIPE TERM
+fi
+
+cp -a /usr/share/doc/${pkg}/examples/* "${AUTOPKGTEST_TMP}"
+
+cd "${AUTOPKGTEST_TMP}"
+
+sh readWriteTest
+if [ $? -eq 0 ]; then
+  echo "Test readWriteTest PASSED"
+else
+  echo "Test readWriteTest FAILED"
+fi
+

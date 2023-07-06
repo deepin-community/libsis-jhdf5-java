@@ -1,0 +1,64 @@
+Author: Andreas Tille <tille@debian.org>
+Last-Update: Mon, 13 Aug 2018 14:30:28 +0200
+Description: Use Debian packaged jars
+Forwarded: not-needed
+
+--- a/.classpath
++++ b/.classpath
+@@ -4,18 +4,19 @@
+ 	<classpathentry kind="src" path="sourceExamples/java"/>
+ 	<classpathentry kind="src" path="sourceTest/java"/>
+ 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+-	<classpathentry kind="lib" path="libs"/>
+ 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+-	<classpathentry kind="lib" path="libs/test/hamcrest-core.jar"/>
+-	<classpathentry kind="lib" path="libs/test/hamcrest-integration.jar"/>
+-	<classpathentry kind="lib" path="libs/test/hamcrest-library.jar"/>
+-	<classpathentry kind="lib" path="libs/test/jmock.jar"/>
+-	<classpathentry kind="lib" path="libs/test/objenesis-1.0.jar"/>
+-	<classpathentry kind="lib" path="libs/test/testng-jdk15.jar"/>
+-	<classpathentry kind="lib" path="libs/build/ecj-4.6.1.jar"/>
+-	<classpathentry kind="lib" path="libs/prod/commons-lang3-3.7.jar" sourcepath="libs/prod/commons-lang3-3.7-sources.jar"/>
+-	<classpathentry kind="lib" path="libs/prod/commons-io-2.6.jar" sourcepath="libs/prod/commons-io-2.6-sources.jar"/>
+-	<classpathentry kind="lib" path="libs/prod/args4j-2.33.jar"/>
+-	<classpathentry kind="lib" path="libs/prod/sis-base-18.09.0.jar" sourcepath="libs/prod/sis-base-18.09.0-sources.jar"/>
++	<classpathentry kind="lib" path="/usr/share/java/hamcrest-core.jar"/>
++	<classpathentry kind="lib" path="/usr/share/java/hamcrest-integration.jar"/>
++	<classpathentry kind="lib" path="/usr/share/java/hamcrest-library.jar"/>
++	<classpathentry kind="lib" path="/usr/share/java/jmock2.jar"/>
++	<classpathentry kind="lib" path="/usr/share/java/objenesis.jar"/>
++	<classpathentry kind="lib" path="/usr/share/java/testng.jar"/>
++	<classpathentry kind="lib" path="/usr/share/java/eclipse-jdt-core.jar"/>
++	<classpathentry kind="lib" path="/usr/share/java/eclipse-jdt-compiler-apt.jar"/>
++	<classpathentry kind="lib" path="/usr/share/java/commons-lang3.jar"/>
++	<classpathentry kind="lib" path="/usr/share/java/commons-io.jar"/>
++	<classpathentry kind="lib" path="/usr/share/java/sis-base.jar"/>
++	<classpathentry kind="lib" path="/usr/share/java/args4j.jar"/>
++	<classpathentry kind="lib" path="/usr/share/java/jaxb-core.jar"/>
+ 	<classpathentry kind="output" path="targets/classes"/>
+ </classpath>
+--- a/build.gradle
++++ b/build.gradle
+@@ -3,8 +3,8 @@
+ group='sis'
+ 
+ dependencies {
+-    compile fileTree(dir: 'libs/prod', include: '*.jar')
+-    testCompile fileTree(dir: 'libs/test', include: '*.jar')
++    compile fileTree(dir: '/usr/share/java', include: '*.jar')
++    testCompile fileTree(dir: '/usr/share/java', include: '*.jar')
+ }
+ 
+ tasks.withType(Test) {
+--- a/javaproject.gradle
++++ b/javaproject.gradle
+@@ -180,7 +180,8 @@
+ }
+ 
+ dependencies {
+-    ecj files('../jhdf5/libs/build/ecj-4.6.1.jar')
++    ecj files('/usr/share/java/eclipse-jdt-core.jar')
++    ecj files('/usr/share/java/eclipse-jdt-compiler-apt.jar')
+ }
+ 
+ compileJava {
